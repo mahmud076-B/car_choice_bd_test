@@ -265,6 +265,12 @@ h6 {
 }
 
 /* Hero headline slot — one gold word slides up, the next rises in */
+.hero-accent {
+  line-height: 1;
+}
+.hero-accent .hero-slot {
+  margin-top: 0;
+}
 .hero-slot {
   position: relative;
   display: block;

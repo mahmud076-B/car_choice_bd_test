@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MapPin, Phone, MessageSquare, Mail } from "lucide-react";
+import HeroVideo from "@/components/HeroVideo";
 import { ContactForm } from "@/components/forms/LeadFormFields";
 import { submitContact } from "@/app/actions/leads";
 import { generalInquiryUrl } from "@/lib/whatsapp";
@@ -16,7 +17,14 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="relative overflow-hidden bg-[#050505]">
+      <HeroVideo src="/contact-showroom.mp4" poster="/Cover_Photo.png" />
+      <div className="absolute inset-0 z-[1] bg-black/45" aria-hidden />
+      <div
+        className="absolute inset-0 z-[1] bg-gradient-to-b from-black/75 via-black/40 to-black/80"
+        aria-hidden
+      />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
       <div className="text-center mb-10">
         <span className="gold-badge mb-4">Get in Touch</span>
         <h1 className="text-3xl sm:text-4xl font-bold text-white mt-3">
@@ -64,6 +72,7 @@ export default function ContactPage() {
           <ContactForm action={submitContact} />
         </div>
       </StaggerReveal>
+      </div>
     </div>
   );
 }

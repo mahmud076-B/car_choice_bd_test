@@ -11,8 +11,7 @@ import {
 } from "lucide-react";
 import { listPublishedVehicles } from "@/lib/vehicles";
 import { MOCK_DELIVERED_CARS } from "@/data/mockVehicles";
-import { generalInquiryUrl } from "@/lib/whatsapp";
-import { HOTLINE_DISPLAY, SHOWROOM_ADDRESS } from "@/lib/constants";
+import { SHOWROOM_ADDRESS } from "@/lib/constants";
 import VehicleCard from "@/components/VehicleCard";
 import BrandMarquee from "@/components/BrandMarquee";
 import HeroVideo from "@/components/HeroVideo";
@@ -64,7 +63,7 @@ export default async function HomePage() {
   return (
     <div className="bg-[#050505]">
       {/* Cinematic hero — blurred SUV video + strong overlay for readable copy */}
-      <section className="relative min-h-[70vh] sm:min-h-[88vh] flex items-start sm:items-center overflow-hidden text-white">
+      <section className="relative min-h-[calc(100svh-68px)] sm:min-h-[88vh] flex items-center overflow-hidden text-white">
         <HeroVideo src="/SUV_driving_on_road.mp4" />
         <div
           className="absolute inset-0 z-[1] bg-black/35"
@@ -79,44 +78,39 @@ export default async function HomePage() {
           aria-hidden
         />
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-10 sm:py-24">
-          <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] sm:tracking-[0.35em] text-[#d4af37] mb-2 sm:mb-4 font-semibold drop-shadow-md">
-            Japanese Reconditioned · Rajshahi
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-24">
+          <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] sm:tracking-[0.32em] text-[#d4af37] mb-5 sm:mb-4 font-semibold drop-shadow-md">
+            Japanese Automotive Excellence
           </p>
-          <h1 className="text-[2rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-3xl leading-[1.05] drop-shadow-[0_2px_24px_rgba(0,0,0,0.85)]">
-            Drive Excellence.
-            <span className="sr-only">Your trusted car importer.</span>
+          <h1 className="text-[1.85rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-3xl leading-[1.18] sm:leading-[1.08] drop-shadow-[0_2px_24px_rgba(0,0,0,0.85)]">
+            Driven by Trust.
+            <span className="mt-2 sm:mt-1 block">Defined by Quality.</span>
+          </h1>
+          <p className="hero-accent mt-6 sm:mt-4 text-[1.35rem] sm:text-3xl md:text-4xl font-extrabold tracking-tight" aria-hidden="true">
             <span className="hero-slot" aria-hidden="true">
               <span className="hero-word">Ready Stock</span>
               <span className="hero-word">Pre-Order</span>
               <span className="hero-word">Auction Grade</span>
               <span className="hero-word">Delivered</span>
             </span>
-          </h1>
-          <p className="mt-3 sm:mt-5 text-sm sm:text-base text-white/85 max-w-lg leading-relaxed drop-shadow-md">
-            Pre-order · Ready stock · Wholesale · Retail — near BRTA Office,
-            Amchattar.
           </p>
-          <div className="mt-5 sm:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-2.5 sm:gap-3">
+          <p className="mt-7 sm:mt-6 max-w-[36ch] sm:max-w-lg text-[15px] sm:text-lg font-normal leading-[1.75] tracking-[0.01em] text-white/75 drop-shadow-md">
+            Discover carefully sourced Japanese vehicles with a commitment to
+            quality, transparency, and a better ownership experience.
+          </p>
+          <div className="mt-8 sm:mt-8 flex flex-wrap items-center gap-2.5 sm:gap-3">
             <Link
               href="/stock"
-              className="btn-primary inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-md text-sm w-full sm:w-auto"
+              className="btn-primary inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] sm:text-sm"
             >
-              Check Live Stock
+              Explore Available Cars
+              <span aria-hidden="true">↗</span>
             </Link>
-            <a
-              href={generalInquiryUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-whatsapp inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-md text-sm w-full sm:w-auto"
-            >
-              WhatsApp {HOTLINE_DISPLAY}
-            </a>
             <Link
-              href="/verify-auction-sheet"
-              className="btn-ghost inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-md text-sm w-full sm:w-auto"
+              href="/contact"
+              className="btn-ghost inline-flex items-center justify-center px-4 py-2.5 rounded-full text-[13px] sm:text-sm"
             >
-              Verify Auction Sheet
+              Contact Us
             </Link>
           </div>
         </div>
