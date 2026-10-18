@@ -1,0 +1,493 @@
+@import "tailwindcss";
+
+:root {
+  /* Car Choice BD — coming-soon dark glassmorphism */
+  --bg-primary: #050505;
+  --bg-secondary: #0f0f0f;
+  --bg-tertiary: #161616;
+  --bg-surface: rgba(15, 15, 15, 0.55);
+  --ink: #ffffff;
+  --ink-muted: #b0b0b0;
+  --navy: #0f0f0f;
+  --navy-dark: #050505;
+  /* Brand actions → gold (not loud red); WhatsApp → soft glass green */
+  --crimson-primary: #d4af37;
+  --crimson-hover: #e0c04a;
+  --gold-primary: #d4af37;
+  --gold-soft: rgba(212, 175, 55, 0.15);
+  --gold-ink: #0b1426;
+  --whatsapp-primary: rgba(37, 211, 102, 0.14);
+  --whatsapp-border: rgba(37, 211, 102, 0.4);
+  --whatsapp-text: #6ee7a0;
+  --whatsapp-dark: rgba(37, 211, 102, 0.22);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --utility: #1a1a1a;
+  --glass-bg: rgba(15, 15, 15, 0.4);
+  --glass-blur: 24px;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--ink);
+  font-family: var(--font-jakarta), Inter, system-ui, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-outfit), Inter, system-ui, sans-serif;
+  color: #ffffff;
+}
+
+.text-white h1,
+.text-white h2,
+.text-white h3,
+.text-white h4,
+.text-white h5,
+.text-white h6 {
+  color: inherit;
+}
+
+/* Frosted glass panel — matches carchoicebd.com coming soon */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+  border-radius: 1.5rem;
+}
+
+.glass-card {
+  background: rgba(15, 15, 15, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.65);
+  border-radius: 1rem;
+}
+
+.glass-card:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+/* Header nav — glass tint/border only; blur via Tailwind utilities
+   (Lightning CSS strips unprefixed backdrop-filter from custom rules) */
+.nav-glass {
+  background: rgba(11, 20, 38, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.nav-glass-mobile {
+  background: rgba(11, 20, 38, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gold-badge {
+  display: inline-block;
+  padding: 0.375rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.05);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("/Cover_Photo.png");
+  background-position: center;
+  background-size: cover;
+  filter: blur(10px) brightness(0.55);
+  transform: scale(1.1);
+  animation: bg-pan 30s linear infinite alternate;
+}
+
+.glow-orb {
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70vw;
+  max-width: 800px;
+  height: 70vw;
+  max-height: 800px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.15) 0%,
+    rgba(0, 0, 0, 0) 60%
+  );
+}
+
+@keyframes bg-pan {
+  from {
+    background-position: 20% center;
+  }
+  to {
+    background-position: 80% center;
+  }
+}
+
+@keyframes brand-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.brand-marquee-track {
+  animation: brand-marquee 35s linear infinite;
+}
+
+.brand-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100% !important;
+    max-width: 80rem;
+    margin-inline: auto;
+  }
+}
+
+.logo-video-wrap {
+  padding: 2px;
+  border-radius: 1rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.logo-video-inner {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
+.logo-video {
+  width: 100%;
+  height: auto;
+  mix-blend-mode: screen;
+  display: block;
+}
+
+.btn-primary {
+  background: var(--gold-primary);
+  color: var(--gold-ink);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  font-weight: 700;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary:hover {
+  background: var(--crimson-hover);
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(212, 175, 55, 0.45);
+  color: #d4af37;
+}
+
+.btn-whatsapp {
+  background: var(--whatsapp-primary);
+  color: var(--whatsapp-text);
+  border: 1px solid var(--whatsapp-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-weight: 700;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-whatsapp:hover {
+  background: var(--whatsapp-dark);
+  border-color: rgba(37, 211, 102, 0.55);
+}
+
+.text-brand-red {
+  color: var(--gold-primary);
+}
+
+.text-brand-gold {
+  color: var(--gold-primary);
+}
+
+.section-rule {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-primary),
+    transparent
+  );
+  margin: 0.75rem auto 0;
+}
+
+.divider-fade {
+  width: 8rem;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+/* Hero headline slot — one gold word slides up, the next rises in */
+.hero-slot {
+  position: relative;
+  display: block;
+  height: 1.18em;
+  margin-top: 0.12em;
+  overflow: hidden;
+}
+.hero-word {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1.18em;
+  line-height: 1.18;
+  white-space: nowrap;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background-image: linear-gradient(
+    100deg,
+    #f8e7a8 0%,
+    #d4af37 46%,
+    #f6e3a1 78%,
+    #c4a04a 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0;
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.55));
+  animation: hero-word 10.6s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+  will-change: transform, opacity;
+}
+.hero-word:nth-child(1) {
+  animation-delay: 0s;
+}
+.hero-word:nth-child(2) {
+  animation-delay: 2.65s;
+}
+.hero-word:nth-child(3) {
+  animation-delay: 5.3s;
+}
+.hero-word:nth-child(4) {
+  animation-delay: 7.95s;
+}
+@keyframes hero-word {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 78%, 0);
+  }
+  4.2% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  20.8% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    opacity: 0;
+    transform: translate3d(0, -78%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 78%, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-word {
+    animation: none;
+    opacity: 0;
+    transform: none;
+    filter: none;
+  }
+  .hero-word:first-child {
+    opacity: 1;
+  }
+}
+
+/* Mobile drawer rows — stagger in when the menu checkbox is checked */
+@keyframes mobile-nav-in {
+  from {
+    opacity: 0;
+    transform: translate3d(12px, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > .mobile-nav-row,
+.group\/mobile:has(:checked) .mobile-nav-panel > .group\/pay {
+  animation: mobile-nav-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(1) {
+  animation-delay: 40ms;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(2) {
+  animation-delay: 90ms;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(3) {
+  animation-delay: 140ms;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(4) {
+  animation-delay: 190ms;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(5) {
+  animation-delay: 240ms;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(6) {
+  animation-delay: 290ms;
+}
+.group\/mobile:has(:checked) .mobile-nav-panel > :nth-child(7) {
+  animation-delay: 340ms;
+}
+
+/* Per-card scroll reveal — GPU transform/opacity only, replays each entry */
+.stagger-float-grid.is-armed > .stagger-item {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity var(--stagger-dur, 560ms) cubic-bezier(0.22, 1, 0.36, 1),
+    transform var(--stagger-dur, 560ms) cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s ease,
+    background 0.45s ease,
+    box-shadow 0.45s ease;
+}
+.stagger-float-grid.is-armed > .stagger-item.is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.stagger-float-grid .stagger-item img {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Colorful glass only on real cards — not text columns or layout wrappers */
+.stagger-float-grid > .stagger-item.rounded-xl,
+.stagger-float-grid > .stagger-item.rounded-2xl,
+.stagger-float-grid > .stagger-item.glass-card,
+.stagger-float-grid > .stagger-item.glass-panel {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Desktop hover */
+@media (hover: hover) and (pointer: fine) {
+  .stagger-float-grid.is-armed > .stagger-item.is-in.rounded-xl:hover,
+  .stagger-float-grid.is-armed > .stagger-item.is-in.rounded-2xl:hover,
+  .stagger-float-grid.is-armed > .stagger-item.is-in.glass-panel:hover {
+    border-color: rgba(212, 175, 55, 0.55);
+    background: linear-gradient(
+      165deg,
+      rgba(212, 175, 55, 0.2),
+      rgba(11, 20, 38, 0.78) 60%,
+      rgba(37, 211, 102, 0.08)
+    );
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    transform: translate3d(0, -4px, 0) scale(1.02);
+  }
+  /* Photo cards: keep their own fill, only gold edge + image zoom */
+  .stagger-float-grid.is-armed > .stagger-item.is-in.glass-card:hover,
+  .stagger-float-grid.is-armed > .stagger-item.is-in.overflow-hidden:hover {
+    border-color: rgba(212, 175, 55, 0.55);
+    background: unset;
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.32),
+      inset 0 0 0 1px rgba(212, 175, 55, 0.35);
+    transform: translate3d(0, -4px, 0);
+  }
+  .stagger-float-grid.is-armed > .stagger-item.is-in:hover img {
+    transform: scale(1.05);
+  }
+}
+
+/* Phone: color when the card is in view */
+@media (hover: none), (pointer: coarse) {
+  .stagger-float-grid.is-armed > .stagger-item.is-in.rounded-xl,
+  .stagger-float-grid.is-armed > .stagger-item.is-in.rounded-2xl,
+  .stagger-float-grid.is-armed > .stagger-item.is-in.glass-panel {
+    border-color: rgba(212, 175, 55, 0.5);
+    background: linear-gradient(
+      165deg,
+      rgba(212, 175, 55, 0.18),
+      rgba(11, 20, 38, 0.8) 60%,
+      rgba(37, 211, 102, 0.08)
+    );
+    box-shadow:
+      0 12px 28px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+  .stagger-float-grid.is-armed > .stagger-item.is-in.glass-card,
+  .stagger-float-grid.is-armed > .stagger-item.is-in.overflow-hidden {
+    border-color: rgba(212, 175, 55, 0.5);
+    background: unset;
+    box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.4);
+    transform: translate3d(0, 0, 0);
+  }
+  .stagger-float-grid.is-armed > .stagger-item.is-in img {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-float-grid.is-armed > .stagger-item,
+  .stagger-float-grid.is-armed > .stagger-item.is-in,
+  .stagger-float-grid.is-armed > .stagger-item.is-in:hover {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-primary);
+}
