@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="relative overflow-hidden bg-[#050505]">
-      <HeroVideo src="/contact-showroom.mp4" poster="/Cover_Photo.png" />
+      <HeroVideo src="/contact-showroom.mp4" />
       <div className="absolute inset-0 z-[1] bg-black/45" aria-hidden />
       <div
         className="absolute inset-0 z-[1] bg-gradient-to-b from-black/75 via-black/40 to-black/80"

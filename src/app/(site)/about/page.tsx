@@ -16,7 +16,7 @@ export default function AboutPage() {
   return (
     <div className="bg-[#050505]">
       <section className="relative min-h-[calc(100svh-68px)] sm:min-h-[88vh] flex items-center overflow-hidden text-white">
-        <HeroVideo src="/about-showroom.mp4" poster="/Cover_Photo.png" />
+        <HeroVideo src="/about-showroom.mp4" />
         <div className="absolute inset-0 z-[1] bg-black/35" aria-hidden />
         <div
           className="absolute inset-0 z-[1] bg-gradient-to-r from-black/80 via-black/50 to-black/25"
