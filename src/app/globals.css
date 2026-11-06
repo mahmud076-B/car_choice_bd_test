@@ -264,6 +264,20 @@ h6 {
   );
 }
 
+@keyframes duty-amount-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.duty-amount {
+  animation: duty-amount-in 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* Hero headline slot — one gold word slides up, the next rises in */
 .hero-accent {
   line-height: 1;

@@ -2,15 +2,18 @@ import Link from "next/link";
 import { listPublishedVehicles, listAllVehiclesAdmin } from "@/lib/vehicles";
 import { listInquiriesLocal, listPreOrdersLocal } from "@/lib/leads";
 import { listDeliveredCars } from "@/lib/delivered";
+import { listDutySheet } from "@/lib/duty";
 
 export default async function AdminDashboardPage() {
-  const [all, published, inquiries, preOrders, delivered] = await Promise.all([
-    listAllVehiclesAdmin(),
-    listPublishedVehicles(),
-    listInquiriesLocal(),
-    listPreOrdersLocal(),
-    listDeliveredCars(),
-  ]);
+  const [all, published, inquiries, preOrders, delivered, duty] =
+    await Promise.all([
+      listAllVehiclesAdmin(),
+      listPublishedVehicles(),
+      listInquiriesLocal(),
+      listPreOrdersLocal(),
+      listDeliveredCars(),
+      listDutySheet(),
+    ]);
 
   const cards = [
     {
@@ -36,6 +39,12 @@ export default async function AdminDashboardPage() {
       value: delivered.length,
       sub: "gallery items",
       href: "/admin/delivered-cars",
+    },
+    {
+      label: "Duty sheet",
+      value: duty.length,
+      sub: "calculator rows",
+      href: "/admin/duty",
     },
   ];
 

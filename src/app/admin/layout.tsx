@@ -7,6 +7,7 @@ const links = [
   { href: "/admin/inquiries", label: "Inquiries" },
   { href: "/admin/pre-orders", label: "Pre-Orders" },
   { href: "/admin/delivered-cars", label: "Delivered" },
+  { href: "/admin/duty", label: "Duty sheet" },
 ];
 
 export default function AdminLayout({

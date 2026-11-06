@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Verify Auction Sheet", href: "/verify-auction-sheet" },
+  { label: "Duty Calculator", href: "/car-duty" },
   { label: "Delivered Cars", href: "/delivered-cars" },
   { label: "Stock List", href: "/stock" },
   {
@@ -60,17 +61,8 @@ export default function Header() {
                     className="h-[160%] w-[160%] max-w-none object-contain brightness-0 invert drop-shadow-[0_0_10px_rgba(212,175,55,0.35)]"
                   />
                 </span>
-                <span className="relative font-extrabold text-[15px] sm:text-lg tracking-tight text-white leading-none min-w-0">
-                  CAR{" "}
-                  <span className="text-[#d4af37]">
-                    CHOIC
-                    <span className="relative inline-block">
-                      E
-                      <span className="absolute -top-[0.55em] left-full ml-0.5 rounded-[2px] bg-[#d4af37] px-[3px] py-[1px] text-[7px] sm:text-[8px] font-bold leading-none tracking-wide text-[#0b1426]">
-                        BD
-                      </span>
-                    </span>
-                  </span>
+                <span className="font-extrabold text-[15px] sm:text-lg tracking-tight text-white leading-none min-w-0">
+                  CAR <span className="text-[#d4af37]">CHOICE</span> BD
                 </span>
               </Link>
 
