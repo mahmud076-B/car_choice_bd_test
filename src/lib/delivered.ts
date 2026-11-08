@@ -28,10 +28,11 @@ export async function listDeliveredCars(): Promise<DeliveredCar[]> {
       .from("delivered_cars")
       .select("*")
       .eq("is_published", true)
-      .order("sort_order", { ascending: true });
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
 
-    if (error || !data?.length) {
-      return MOCK_DELIVERED_CARS.filter((c) => c.customerConsent);
+    if (error || !data) {
+      return [];
     }
 
     return data.map((row) => ({
@@ -43,6 +44,6 @@ export async function listDeliveredCars(): Promise<DeliveredCar[]> {
       customerConsent: Boolean(row.customer_consent),
     }));
   } catch {
-    return MOCK_DELIVERED_CARS.filter((c) => c.customerConsent);
+    return [];
   }
 }

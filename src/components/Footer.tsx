@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { HOTLINE_DISPLAY, SHOWROOM_ADDRESS } from "@/lib/constants";
+import {
+  FACEBOOK_PAGE_URL,
+  GOOGLE_MAPS_DIRECTIONS_URL,
+  GOOGLE_MAPS_URL,
+  HOTLINE_DISPLAY,
+  SECONDARY_HOTLINE_DISPLAY,
+  SHOWROOM_ADDRESS,
+} from "@/lib/constants";
 import { generalInquiryUrl } from "@/lib/whatsapp";
 
 const usefulLinks = [
@@ -35,9 +42,9 @@ export default function Footer() {
             </span>
           </Link>
           <p className="text-sm text-[#b0b0b0] leading-relaxed">
-            Your trusted destination for Japanese reconditioned vehicles in
-            Rajshahi, Bangladesh. Certified quality, authentic auction grades,
-            and direct import from Japan.
+            Every car has a story — start yours with CAR Choice BD! From
+            reliable daily rides to luxury dreams, we bring you inspected,
+            road-ready Japanese reconditioned vehicles in Rajshahi, Bangladesh.
           </p>
           <p className="mt-4 text-sm">
             <span className="text-white/40">Have any question?</span>
@@ -71,6 +78,25 @@ export default function Footer() {
           <p className="text-sm text-[#b0b0b0] leading-relaxed">
             {SHOWROOM_ADDRESS}
           </p>
+          <div className="mt-2.5 flex flex-wrap items-center gap-3 text-xs">
+            <a
+              href={GOOGLE_MAPS_DIRECTIONS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#d4af37] hover:underline font-semibold"
+            >
+              Get Directions on Google Maps ↗
+            </a>
+            <span className="text-white/25">·</span>
+            <a
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/70 hover:text-[#d4af37] hover:underline font-medium"
+            >
+              View Location Pin
+            </a>
+          </div>
           <p className="mt-3 text-sm">
             <span className="text-white/40">Sales Hotline / WhatsApp:</span>
             <br />
@@ -82,15 +108,34 @@ export default function Footer() {
             >
               {HOTLINE_DISPLAY}
             </a>
+            <span className="text-white/30 mx-1.5">·</span>
+            <a
+              href="https://wa.me/8801847475544"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#6ee7a0] hover:text-[#d4af37] transition-colors"
+            >
+              {SECONDARY_HOTLINE_DISPLAY}
+            </a>
           </p>
           <p className="mt-4 text-xs text-white/35 tracking-wide">
             We Accept Bank Pay Order · Cheque · bKash
+          </p>
+          <p className="mt-3 text-sm">
+            <a
+              href={FACEBOOK_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-semibold text-[#d4af37] hover:underline"
+            >
+              Follow us on Facebook →
+            </a>
           </p>
         </div>
       </div>
 
       <div className="border-t border-white/10 py-4 text-center text-xs text-white/30 tracking-widest uppercase">
-        © {new Date().getFullYear()} CARCHOICE. ALL RIGHTS RESERVED.{" "}
+        © {new Date().getFullYear()} CAR CHOICE BD. ALL RIGHTS RESERVED.{" "}
         <Link href="/privacy" className="hover:text-white/60 underline-offset-2">
           Privacy
         </Link>{" "}

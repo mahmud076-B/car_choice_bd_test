@@ -107,7 +107,7 @@ export function mapDbVehicle(row: DbVehicle): Vehicle {
     priceDisplay:
       row.price_display ??
       (priceMode === "EXACT" && row.price_bdt
-        ? `৳ ${row.price_bdt.toLocaleString("en-BD")}`
+        ? `৳ ${Number(row.price_bdt).toLocaleString("en-IN")}`
         : "Call for Price"),
     priceMode,
     isNegotiable: row.is_negotiable ?? true,

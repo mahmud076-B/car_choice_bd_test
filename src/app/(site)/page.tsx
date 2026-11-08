@@ -10,11 +10,18 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { listPublishedVehicles } from "@/lib/vehicles";
-import { MOCK_DELIVERED_CARS } from "@/data/mockVehicles";
-import { SHOWROOM_ADDRESS } from "@/lib/constants";
+import { listDeliveredCars } from "@/lib/delivered";
+import {
+  GOOGLE_MAPS_DIRECTIONS_URL,
+  GOOGLE_MAPS_URL,
+  HOTLINE_DISPLAY,
+  HOTLINE_TEL,
+  SHOWROOM_ADDRESS,
+} from "@/lib/constants";
 import VehicleCard from "@/components/VehicleCard";
 import BrandMarquee from "@/components/BrandMarquee";
 import HeroVideo from "@/components/HeroVideo";
+import ShowroomMap from "@/components/ShowroomMap";
 import StaggerReveal from "@/components/StaggerReveal";
 
 const portals = [
@@ -57,8 +64,12 @@ const portals = [
 ];
 
 export default async function HomePage() {
-  const stock = await listPublishedVehicles();
+  const [stock, deliveredCars] = await Promise.all([
+    listPublishedVehicles(),
+    listDeliveredCars(),
+  ]);
   const featured = stock.filter((v) => v.featured).slice(0, 6);
+  const deliveredShowcase = deliveredCars.slice(0, 4);
 
   return (
     <div className="bg-[#050505]">
@@ -161,7 +172,7 @@ export default async function HomePage() {
             <div className="section-rule" />
           </div>
           <StaggerReveal className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            {MOCK_DELIVERED_CARS.map((car) => (
+            {deliveredShowcase.map((car) => (
               <Link
                 key={car.id}
                 href="/delivered-cars"
@@ -260,21 +271,58 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Contact strip */}
-      <section className="py-12 border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">
-              Visit our showroom
+      {/* Showroom Location & Live Map */}
+      <section className="py-16 border-t border-white/10 bg-[#050505]">
+        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-5 space-y-4">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#d4af37] font-semibold">
+              Flagship Showroom · Rajshahi
+            </p>
+            <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight">
+              Visit Our Showroom
             </h2>
-            <p className="text-sm text-white/45 mt-1">{SHOWROOM_ADDRESS}</p>
+            <div className="w-12 h-px bg-[#d4af37]/70" />
+            <p className="text-sm text-[#b0b0b0] leading-relaxed">
+              {SHOWROOM_ADDRESS}
+            </p>
+            <p className="text-xs text-white/60">
+              Open Everyday: 10:00 AM – 8:00 PM · Hotline:{" "}
+              <a
+                href={`tel:${HOTLINE_TEL}`}
+                className="text-[#d4af37] font-semibold hover:underline"
+              >
+                {HOTLINE_DISPLAY}
+              </a>
+            </p>
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <a
+                href={GOOGLE_MAPS_DIRECTIONS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary px-5 py-3 rounded-full text-xs sm:text-sm font-bold inline-flex items-center gap-2"
+              >
+                Get Directions ↗
+              </a>
+              <a
+                href={GOOGLE_MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost px-5 py-3 rounded-full text-xs sm:text-sm font-semibold inline-flex items-center gap-2"
+              >
+                Open in Google Maps
+              </a>
+              <Link
+                href="/contact"
+                className="text-xs sm:text-sm font-semibold text-[#d4af37] hover:underline px-2 py-2"
+              >
+                Contact Us →
+              </Link>
+            </div>
           </div>
-          <Link
-            href="/contact"
-            className="btn-primary px-7 py-3.5 rounded-md text-sm"
-          >
-            Contact Us
-          </Link>
+
+          <div className="lg:col-span-7">
+            <ShowroomMap heightClass="h-[300px] sm:h-[360px]" />
+          </div>
         </div>
       </section>
     </div>

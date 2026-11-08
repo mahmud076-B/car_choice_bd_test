@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, Phone, Navigation } from "lucide-react";
 import HeroVideo from "@/components/HeroVideo";
 import {
+  GOOGLE_MAPS_DIRECTIONS_URL,
+  GOOGLE_MAPS_URL,
   HOTLINE_DISPLAY,
   HOTLINE_TEL,
   SHOWROOM_ADDRESS,
@@ -51,9 +53,30 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-8 sm:mt-10 space-y-3 text-sm text-white/70">
-            <p className="flex items-start gap-2.5 max-w-md leading-relaxed">
+            <p className="flex items-start gap-2.5 max-w-lg leading-relaxed">
               <MapPin className="w-4 h-4 mt-0.5 text-[#d4af37] shrink-0" />
-              {SHOWROOM_ADDRESS}
+              <span>
+                {SHOWROOM_ADDRESS}
+                <br />
+                <a
+                  href={GOOGLE_MAPS_DIRECTIONS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#d4af37] hover:underline mt-1"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  Get Directions on Google Maps ↗
+                </a>
+                <span className="mx-2 text-white/30">·</span>
+                <a
+                  href={GOOGLE_MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/70 hover:text-[#d4af37] hover:underline"
+                >
+                  Open Map Pin
+                </a>
+              </span>
             </p>
             <p>
               <a

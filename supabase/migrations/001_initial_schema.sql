@@ -1,39 +1,59 @@
--- Car Choice BD — initial schema
--- Apply via Supabase SQL editor or CLI: supabase db push
+-- Car Choice BD — Complete Production Schema
+-- Apply via Supabase SQL editor or CLI: npx supabase db push --db-url "..."
 
 create extension if not exists "pgcrypto";
 
-create type inventory_status as enum (
-  'READY_STOCK',
-  'PORT_STOCK',
-  'IN_TRANSIT',
-  'RESERVED',
-  'SOLD'
-);
+do $$ begin
+  create type inventory_status as enum (
+    'READY_STOCK',
+    'PORT_STOCK',
+    'IN_TRANSIT',
+    'RESERVED',
+    'SOLD'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
-create type publication_status as enum (
-  'DRAFT',
-  'PUBLISHED',
-  'ARCHIVED'
-);
+do $$ begin
+  create type publication_status as enum (
+    'DRAFT',
+    'PUBLISHED',
+    'ARCHIVED'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
-create type price_display_mode as enum (
-  'EXACT',
-  'CALL_FOR_PRICE',
-  'UPON_REQUEST'
-);
+do $$ begin
+  create type price_display_mode as enum (
+    'EXACT',
+    'CALL_FOR_PRICE',
+    'UPON_REQUEST'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
-create type inquiry_type as enum (
-  'VEHICLE_INQUIRY',
-  'AUCTION_VERIFY',
-  'GENERAL_CONTACT'
-);
+do $$ begin
+  create type inquiry_type as enum (
+    'VEHICLE_INQUIRY',
+    'AUCTION_VERIFY',
+    'GENERAL_CONTACT'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
-create type inquiry_status as enum (
-  'NEW',
-  'IN_PROGRESS',
-  'CLOSED'
-);
+do $$ begin
+  create type inquiry_status as enum (
+    'NEW',
+    'IN_PROGRESS',
+    'CLOSED'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
 create table if not exists public.vehicles (
   id uuid primary key default gen_random_uuid(),
@@ -121,17 +141,49 @@ create table if not exists public.delivered_cars (
   created_at timestamptz default now()
 );
 
+create table if not exists public.duty_sheet_rows (
+  id text primary key,
+  brand text not null,
+  model text not null,
+  chassis text not null,
+  year int not null,
+  cc int not null,
+  duty_bdt numeric not null default 0,
+  sort_order int default 0,
+  updated_at timestamptz default now()
+);
+
 create index if not exists vehicles_pub_idx on public.vehicles (publication_status, is_featured);
 create index if not exists vehicles_slug_idx on public.vehicles (slug);
 create index if not exists vehicle_images_vehicle_idx on public.vehicle_images (vehicle_id);
+create index if not exists duty_sheet_lookup_idx on public.duty_sheet_rows (brand, model, chassis, year, cc);
 
 alter table public.vehicles enable row level security;
 alter table public.vehicle_images enable row level security;
 alter table public.inquiries enable row level security;
 alter table public.pre_order_requests enable row level security;
 alter table public.delivered_cars enable row level security;
+alter table public.duty_sheet_rows enable row level security;
 
--- Public read published vehicles + images + delivered cars
+-- Drop existing policies safely so script is idempotent
+drop policy if exists "Public read published vehicles" on public.vehicles;
+drop policy if exists "Public read vehicle images" on public.vehicle_images;
+drop policy if exists "Public read delivered" on public.delivered_cars;
+drop policy if exists "Public read duty sheet" on public.duty_sheet_rows;
+drop policy if exists "Public insert inquiries" on public.inquiries;
+drop policy if exists "Public insert preorders" on public.pre_order_requests;
+drop policy if exists "Staff all vehicles" on public.vehicles;
+drop policy if exists "Staff all images" on public.vehicle_images;
+drop policy if exists "Staff read inquiries" on public.inquiries;
+drop policy if exists "Staff update inquiries" on public.inquiries;
+drop policy if exists "Staff delete inquiries" on public.inquiries;
+drop policy if exists "Staff read preorders" on public.pre_order_requests;
+drop policy if exists "Staff update preorders" on public.pre_order_requests;
+drop policy if exists "Staff delete preorders" on public.pre_order_requests;
+drop policy if exists "Staff all delivered" on public.delivered_cars;
+drop policy if exists "Staff all duty sheet" on public.duty_sheet_rows;
+
+-- Public read published vehicles + images + delivered cars + duty sheet
 create policy "Public read published vehicles"
   on public.vehicles for select
   using (publication_status = 'PUBLISHED');
@@ -148,6 +200,10 @@ create policy "Public read vehicle images"
 create policy "Public read delivered"
   on public.delivered_cars for select
   using (is_published = true);
+
+create policy "Public read duty sheet"
+  on public.duty_sheet_rows for select
+  using (true);
 
 -- Public insert leads (anon)
 create policy "Public insert inquiries"
@@ -177,6 +233,10 @@ create policy "Staff update inquiries"
   on public.inquiries for update
   using (auth.role() = 'authenticated');
 
+create policy "Staff delete inquiries"
+  on public.inquiries for delete
+  using (auth.role() = 'authenticated');
+
 create policy "Staff read preorders"
   on public.pre_order_requests for select
   using (auth.role() = 'authenticated');
@@ -185,9 +245,42 @@ create policy "Staff update preorders"
   on public.pre_order_requests for update
   using (auth.role() = 'authenticated');
 
+create policy "Staff delete preorders"
+  on public.pre_order_requests for delete
+  using (auth.role() = 'authenticated');
+
 create policy "Staff all delivered"
   on public.delivered_cars for all
   using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
 
--- Storage bucket note: create `vehicle-media` in dashboard (public read)
+create policy "Staff all duty sheet"
+  on public.duty_sheet_rows for all
+  using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');
+
+-- Create public Storage bucket `vehicle-media` automatically
+insert into storage.buckets (id, name, public)
+values ('vehicle-media', 'vehicle-media', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Public read vehicle-media" on storage.objects;
+drop policy if exists "Staff upload vehicle-media" on storage.objects;
+drop policy if exists "Staff update vehicle-media" on storage.objects;
+drop policy if exists "Staff delete vehicle-media" on storage.objects;
+
+create policy "Public read vehicle-media"
+  on storage.objects for select
+  using (bucket_id = 'vehicle-media');
+
+create policy "Staff upload vehicle-media"
+  on storage.objects for insert
+  with check (bucket_id = 'vehicle-media' and auth.role() = 'authenticated');
+
+create policy "Staff update vehicle-media"
+  on storage.objects for update
+  using (bucket_id = 'vehicle-media' and auth.role() = 'authenticated');
+
+create policy "Staff delete vehicle-media"
+  on storage.objects for delete
+  using (bucket_id = 'vehicle-media' and auth.role() = 'authenticated');

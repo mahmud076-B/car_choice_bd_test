@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import type { InquiryStatus } from "@/lib/types";
 
 const DATA_DIR = path.join(process.cwd(), ".data");
 const INQUIRIES_FILE = path.join(DATA_DIR, "inquiries.json");
@@ -53,41 +54,46 @@ export type LocalPreOrder = {
   created_at: string;
 };
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export async function createInquiry(
   payload: Omit<LocalInquiry, "id" | "created_at" | "status"> & {
     status?: string;
   }
 ): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
-  if (payload.name && false) {
-    // honeypot already checked upstream
-  }
-
   if (isSupabaseConfigured()) {
     try {
       const { createClient } = await import("@/lib/supabase/server");
       const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("inquiries")
-        .insert({
-          inquiry_type: payload.inquiry_type,
-          name: payload.name,
-          phone: payload.phone || null,
-          email: payload.email || null,
-          subject: payload.subject || null,
-          message: payload.message,
-          chassis: payload.chassis || null,
-          vehicle_slug: payload.vehicle_slug || null,
-          status: "NEW",
-        })
-        .select("id")
-        .single();
+      // Do NOT chain .select("id") on public anonymous inserts:
+      // RLS intentionally blocks SELECT on customer inquiries for anon users.
+      const { error } = await supabase.from("inquiries").insert({
+        inquiry_type: payload.inquiry_type,
+        name: payload.name,
+        phone: payload.phone || null,
+        email: payload.email || null,
+        subject: payload.subject || null,
+        message: payload.message,
+        chassis: payload.chassis || null,
+        vehicle_slug: payload.vehicle_slug || null,
+        status: "NEW",
+        website_url_hp: null,
+      });
 
-      if (error) return { ok: false, error: error.message };
-      return { ok: true, id: data.id };
-    } catch (e) {
+      if (error) {
+        return {
+          ok: false,
+          error:
+            "Unable to submit your inquiry right now. Please try again or reach us on WhatsApp.",
+        };
+      }
+      return { ok: true, id: "submitted" };
+    } catch {
       return {
         ok: false,
-        error: e instanceof Error ? e.message : "Failed to save inquiry",
+        error:
+          "Unable to submit your inquiry right now. Please try again or reach us on WhatsApp.",
       };
     }
   }
@@ -111,29 +117,33 @@ export async function createPreOrder(
     try {
       const { createClient } = await import("@/lib/supabase/server");
       const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("pre_order_requests")
-        .insert({
-          name: payload.name,
-          phone: payload.phone,
-          email: payload.email || null,
-          preferred_make: payload.preferred_make || null,
-          preferred_model: payload.preferred_model || null,
-          year_min: payload.year_min ?? null,
-          year_max: payload.year_max ?? null,
-          budget_bdt: payload.budget_bdt ?? null,
-          notes: payload.notes || null,
-          status: "NEW",
-        })
-        .select("id")
-        .single();
+      const { error } = await supabase.from("pre_order_requests").insert({
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email || null,
+        preferred_make: payload.preferred_make || null,
+        preferred_model: payload.preferred_model || null,
+        year_min: payload.year_min ?? null,
+        year_max: payload.year_max ?? null,
+        budget_bdt: payload.budget_bdt ?? null,
+        notes: payload.notes || null,
+        status: "NEW",
+        website_url_hp: null,
+      });
 
-      if (error) return { ok: false, error: error.message };
-      return { ok: true, id: data.id };
-    } catch (e) {
+      if (error) {
+        return {
+          ok: false,
+          error:
+            "Unable to submit your pre-order right now. Please try again or reach us on WhatsApp.",
+        };
+      }
+      return { ok: true, id: "submitted" };
+    } catch {
       return {
         ok: false,
-        error: e instanceof Error ? e.message : "Failed to save pre-order",
+        error:
+          "Unable to submit your pre-order right now. Please try again or reach us on WhatsApp.",
       };
     }
   }
@@ -155,16 +165,17 @@ export async function listInquiriesLocal(): Promise<LocalInquiry[]> {
     try {
       const { createClient } = await import("@/lib/supabase/server");
       const supabase = await createClient();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("inquiries")
         .select("*")
         .order("created_at", { ascending: false });
-      return (data as LocalInquiry[]) ?? [];
+      if (error || !data) return [];
+      return data as LocalInquiry[];
     } catch {
-      return readJson(INQUIRIES_FILE);
+      return [];
     }
   }
-  return readJson(INQUIRIES_FILE);
+  return readJson<LocalInquiry>(INQUIRIES_FILE);
 }
 
 export async function listPreOrdersLocal(): Promise<LocalPreOrder[]> {
@@ -172,14 +183,144 @@ export async function listPreOrdersLocal(): Promise<LocalPreOrder[]> {
     try {
       const { createClient } = await import("@/lib/supabase/server");
       const supabase = await createClient();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("pre_order_requests")
         .select("*")
         .order("created_at", { ascending: false });
-      return (data as LocalPreOrder[]) ?? [];
+      if (error || !data) return [];
+      return data as LocalPreOrder[];
     } catch {
-      return readJson(PREORDERS_FILE);
+      return [];
     }
   }
-  return readJson(PREORDERS_FILE);
+  return readJson<LocalPreOrder>(PREORDERS_FILE);
+}
+
+export async function updateInquiryStatus(
+  id: string,
+  status: InquiryStatus
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isSupabaseConfigured()) {
+    if (!UUID_RE.test(id)) {
+      return { ok: false, error: "Invalid inquiry ID" };
+    }
+    try {
+      const { createClient } = await import("@/lib/supabase/server");
+      const supabase = await createClient();
+      const { error } = await supabase
+        .from("inquiries")
+        .update({ status })
+        .eq("id", id);
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    } catch (e) {
+      return {
+        ok: false,
+        error: e instanceof Error ? e.message : "Failed to update status",
+      };
+    }
+  }
+
+  const rows = await readJson<LocalInquiry>(INQUIRIES_FILE);
+  const idx = rows.findIndex((r) => r.id === id);
+  if (idx >= 0) {
+    rows[idx] = { ...rows[idx], status };
+    await writeJson(INQUIRIES_FILE, rows);
+  }
+  return { ok: true };
+}
+
+export async function deleteInquiry(
+  id: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isSupabaseConfigured()) {
+    if (!UUID_RE.test(id)) {
+      return { ok: false, error: "Invalid inquiry ID" };
+    }
+    try {
+      const { createClient } = await import("@/lib/supabase/server");
+      const supabase = await createClient();
+      const { error } = await supabase.from("inquiries").delete().eq("id", id);
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    } catch (e) {
+      return {
+        ok: false,
+        error: e instanceof Error ? e.message : "Failed to delete inquiry",
+      };
+    }
+  }
+
+  const rows = await readJson<LocalInquiry>(INQUIRIES_FILE);
+  await writeJson(
+    INQUIRIES_FILE,
+    rows.filter((r) => r.id !== id)
+  );
+  return { ok: true };
+}
+
+export async function updatePreOrderStatus(
+  id: string,
+  status: InquiryStatus
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isSupabaseConfigured()) {
+    if (!UUID_RE.test(id)) {
+      return { ok: false, error: "Invalid pre-order ID" };
+    }
+    try {
+      const { createClient } = await import("@/lib/supabase/server");
+      const supabase = await createClient();
+      const { error } = await supabase
+        .from("pre_order_requests")
+        .update({ status })
+        .eq("id", id);
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    } catch (e) {
+      return {
+        ok: false,
+        error: e instanceof Error ? e.message : "Failed to update status",
+      };
+    }
+  }
+
+  const rows = await readJson<LocalPreOrder>(PREORDERS_FILE);
+  const idx = rows.findIndex((r) => r.id === id);
+  if (idx >= 0) {
+    rows[idx] = { ...rows[idx], status };
+    await writeJson(PREORDERS_FILE, rows);
+  }
+  return { ok: true };
+}
+
+export async function deletePreOrder(
+  id: string
+): Promise<{ ok: boolean; error: string } | { ok: true }> {
+  if (isSupabaseConfigured()) {
+    if (!UUID_RE.test(id)) {
+      return { ok: false, error: "Invalid pre-order ID" };
+    }
+    try {
+      const { createClient } = await import("@/lib/supabase/server");
+      const supabase = await createClient();
+      const { error } = await supabase
+        .from("pre_order_requests")
+        .delete()
+        .eq("id", id);
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    } catch (e) {
+      return {
+        ok: false,
+        error: e instanceof Error ? e.message : "Failed to delete pre-order",
+      };
+    }
+  }
+
+  const rows = await readJson<LocalPreOrder>(PREORDERS_FILE);
+  await writeJson(
+    PREORDERS_FILE,
+    rows.filter((r) => r.id !== id)
+  );
+  return { ok: true };
 }

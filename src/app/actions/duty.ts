@@ -2,11 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { saveDutySheet } from "@/lib/duty";
+import { requireStaff } from "@/lib/supabase/auth";
 import type { DutyRow } from "@/data/dutySheet";
 
 export async function saveDutySheetAction(
   rows: DutyRow[]
 ): Promise<{ ok: boolean; message: string }> {
+  const staff = await requireStaff();
+  if (!staff.ok) return { ok: false, message: staff.error };
+
   const result = await saveDutySheet(rows);
   if (!result.ok) return { ok: false, message: result.error };
   revalidatePath("/car-duty");

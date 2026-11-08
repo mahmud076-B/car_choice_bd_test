@@ -31,10 +31,15 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env
+.env.*
+!.env.example
 
 # local demo lead / vehicle overrides (when Supabase unset)
 .data/
+
+# supabase cli temp files
+supabase/.temp/
 
 # vercel
 .vercel

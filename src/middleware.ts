@@ -47,13 +47,29 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user && !isLogin) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/login";
-    return NextResponse.redirect(url);
+  if (!user) {
+    if (!isLogin) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      return NextResponse.redirect(url);
+    }
+    return response;
   }
 
-  if (user && isLogin) {
+  // Verify the authenticated user is an authorized Car Choice BD staff member
+  const { data: isStaff } = await supabase.rpc("is_staff");
+  if (isStaff !== true) {
+    await supabase.auth.signOut();
+    if (!isLogin) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("error", "unauthorized");
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
+
+  if (isLogin) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);

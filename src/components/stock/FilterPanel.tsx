@@ -88,9 +88,9 @@ export default function FilterPanel({ vehicles }: { vehicles: Vehicle[] }) {
           value={get("make") || "ALL"}
           onChange={(e) => update("make", e.target.value)}
         >
-          <option value="ALL">All Car Models</option>
+          <option value="ALL" className="bg-[#0f0f0f] text-white">All Car Models</option>
           {makes.map((m) => (
-            <option key={m} value={m}>
+            <option key={m} value={m} className="bg-[#0f0f0f] text-white">
               {m}
             </option>
           ))}
@@ -135,9 +135,9 @@ export default function FilterPanel({ vehicles }: { vehicles: Vehicle[] }) {
           value={get("color") || "ALL"}
           onChange={(e) => update("color", e.target.value)}
         >
-          <option value="ALL">All Colors</option>
+          <option value="ALL" className="bg-[#0f0f0f] text-white">All Colors</option>
           {colors.map((c) => (
-            <option key={c} value={c}>
+            <option key={c} value={c} className="bg-[#0f0f0f] text-white">
               {c}
             </option>
           ))}
@@ -153,9 +153,9 @@ export default function FilterPanel({ vehicles }: { vehicles: Vehicle[] }) {
           value={get("grade") || "ALL"}
           onChange={(e) => update("grade", e.target.value)}
         >
-          <option value="ALL">All Points</option>
+          <option value="ALL" className="bg-[#0f0f0f] text-white">All Points</option>
           {grades.map((g) => (
-            <option key={g} value={g}>
+            <option key={g} value={g} className="bg-[#0f0f0f] text-white">
               {g}
             </option>
           ))}
@@ -193,9 +193,9 @@ export default function FilterPanel({ vehicles }: { vehicles: Vehicle[] }) {
           value={get("fuel") || "ALL"}
           onChange={(e) => update("fuel", e.target.value)}
         >
-          <option value="ALL">All Fuel Types</option>
+          <option value="ALL" className="bg-[#0f0f0f] text-white">All Fuel Types</option>
           {fuels.map((f) => (
-            <option key={f} value={f}>
+            <option key={f} value={f} className="bg-[#0f0f0f] text-white">
               {f}
             </option>
           ))}
@@ -211,9 +211,9 @@ export default function FilterPanel({ vehicles }: { vehicles: Vehicle[] }) {
           value={get("status") || "ALL"}
           onChange={(e) => update("status", e.target.value)}
         >
-          <option value="ALL">All Statuses</option>
+          <option value="ALL" className="bg-[#0f0f0f] text-white">All Statuses</option>
           {statuses.map((s) => (
-            <option key={s} value={s}>
+            <option key={s} value={s} className="bg-[#0f0f0f] text-white">
               {s.replace(/_/g, " ")}
             </option>
           ))}

@@ -37,9 +37,6 @@ export default async function VerifyPage({ searchParams }: PageProps) {
           auction sheet through Car Choice BD. Free lead service — our team
           follows up on WhatsApp.
         </p>
-        <p className="text-sm text-[#b0b0b0] mt-2">
-          গাড়ির চ্যাসিস নাম্বার দিয়ে অকশন শিট যাচাইয়ের অনুরোধ পাঠান।
-        </p>
       </div>
 
       <StaggerReveal className="grid md:grid-cols-5 gap-6">

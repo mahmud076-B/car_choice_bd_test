@@ -1,4 +1,3 @@
-import { FEATURED_VEHICLES } from "@/data/mockVehicles";
 import type { Vehicle } from "@/lib/types";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { mapDbVehicle } from "@/lib/supabase/mappers";
@@ -21,15 +20,13 @@ export async function listPublishedVehicles(): Promise<Vehicle[]> {
 
     if (error || !data) {
       console.error("listPublishedVehicles:", error?.message);
-      return FEATURED_VEHICLES.filter(
-        (v) => v.publicationStatus === "PUBLISHED"
-      );
+      return [];
     }
 
     return data.map(mapDbVehicle);
   } catch (err) {
-    console.error("listPublishedVehicles fallback:", err);
-    return FEATURED_VEHICLES.filter((v) => v.publicationStatus === "PUBLISHED");
+    console.error("listPublishedVehicles error:", err);
+    return [];
   }
 }
 
@@ -58,12 +55,12 @@ export async function getVehicleBySlug(
       .maybeSingle();
 
     if (error || !data) {
-      return FEATURED_VEHICLES.find((v) => v.slug === slug) ?? null;
+      return null;
     }
 
     return mapDbVehicle(data);
   } catch {
-    return FEATURED_VEHICLES.find((v) => v.slug === slug) ?? null;
+    return null;
   }
 }
 

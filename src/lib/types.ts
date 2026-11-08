@@ -1,6 +1,11 @@
 export type FuelType = "Hybrid" | "Petrol" | "Diesel" | "EV";
 export type DriveType = "2WD" | "4WD" | "AWD";
-export type BodyType = "SUV / Crossover" | "Sedan" | "Van / MPV" | "Hatchback";
+export type BodyType =
+  | "SUV / Crossover"
+  | "Sedan"
+  | "Wagon"
+  | "Van / MPV"
+  | "Hatchback";
 export type InventoryStatus =
   | "READY_STOCK"
   | "PORT_STOCK"
